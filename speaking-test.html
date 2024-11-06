@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Module</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: lightblue;
+        }
+        .nav-bar {
+            background-color: transparent;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            color: black;
+            transition: background-color 0.3s ease;
+        }
+        .nav-bar.scrolled {
+            background-color: rgba(15, 252, 190, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .menu-button {
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px;
+        }
+        .account-icon {
+            color: white;
+            position: relative;
+            cursor: pointer;
+            margin-right: 2cm;
+        }
+        .account-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 10px;
+            z-index: 1001;
+        }
+        .account-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .account-dropdown a:hover {
+            background: #f0f0f0;
+        }
+        h2 {
+            text-align: center;
+            color: #1976d2;
+            margin-top: 80px;
+        }
+        .m, .m1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            height: auto;
+            width: 100%;
+            color: black;
+            text-shadow: #4CAF50;
+            font-size: 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            padding: 30px 10px;
+        }
+        .logo {
+            font-size: x-large;
+        }
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            left: -250px; 
+            transition: left 0.3s ease;
+            z-index: 999;
+            margin-top: 80px;
+            font-size: large;
+        }
+        .sidebar.active {
+            left: 0; 
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #4CAF50;
+        }
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin: 5px 10px;
+        }
+        footer p {
+            margin: 0;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            justify-content: space-between;
+            height: max-content;
+            margin-top: 80px;
+        }
+        .speaking-module {
+            flex: 1;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        #predefined-text {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #global-timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d9534f;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .question-list {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            width: 30%;
+            margin-left: 20px;
+        }
+        .question-node {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: white;
+            border: 1px solid #4CAF50;
+            cursor: pointer; /* Change cursor to pointer */
+        }
+        .completed {
+            background-color: lightgreen;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        .closebtn {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar" id="navbar">
+        <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
+        <div class="logo"><a href="mainest.html">CareerMonks</a></div>
+        <div class="account-icon" onclick="toggleDropdown()">
+          Account
+          <div class="account-dropdown" id="accountDropdown">
+            <a href="#" id="emailDisplay">user@example.com</a>
+            <a href="index.html" onclick="logout()">Logout</a>
+          </div>
+        </div>
+    </nav>
+      
+    <div id="sidebar" class="sidebar">
+        <a href="mainest.html">Home</a>
+        <a href="course.html">Courses</a>
+        <a href="test.html">Take Test</a>
+    </div>
+
+    <div class="container">
+        <div class="speaking-module">
+            <h2>Speaking Module</h2>
+            <div id="instructions">Practice your speaking skills by answering the following questions. You have a total of 15 minutes to complete the test. Click on the record button to answer each question.</div>
+            <div id="predefined-text">What is your favorite hobby?</div>
+            <div id="global-timer">15:00</div>
+            <button type="button" class="btn btn-default btn-sm" id="mic-button" onclick="toggleRecording()" style="display:none;">
+                <span id="mic-icon" class="glyphicon glyphicon-record"></span> Record
+            </button>
+            <button id="next-button" style="display: none;" onclick="nextQuestion()">Next</button>
+            <button id="submit-button" style="display: none;" onclick="submitTest()">Submit</button>
+            <button id="take-test-button" style="display: inline-block; margin-top: 20px;" onclick="startTest()">Start</button>
+            <div id="report-container"></div>
+        </div>
+
+        <div class="question-list" id="question-nodes"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 S-KILL Enhancement Platform | <a href="#" style="color: white;">Privacy Policy</a> | <a href="#" style="color: white;">Terms of Service</a></p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+     const textToSpeak = document.getElementById('predefined-text');
+const nextButton = document.getElementById('next-button');
+const submitButton = document.getElementById('submit-button');
+const micButton = document.getElementById('mic-button');
+const reportContainer = document.getElementById('report-container');
+const questionNodesContainer = document.getElementById('question-nodes');
+const globalTimer = document.getElementById('global-timer');
+const instructions = document.getElementById('instructions');
+
+let questionIndex = 0;
+let timer;
+let timeRemaining = 15 * 60; // 15 minutes in seconds
+let mediaRecorder;
+let audioChunks = [];
+let answers = []; // Store answers
+
+const questions = [
+    "1.What is your favorite hobby?",
+    "2.Describe your ideal vacation.",
+    "3.What is your favorite book and why?",
+    "4.Explain how to cook your favorite dish.",
+    "5.What are your goals for the next five years?",
+    "6.What do you think is the most important skill to have in today's world?",
+    "7.How do you handle stress and pressure?",
+    "8.Describe a memorable event from your childhood.",
+    "9.What do you enjoy most about your job or studies?",
+    "10.What is your opinion on social media?",
+    "11.How do you stay organized?",
+    "12.What is a challenge you've overcome?",
+    "13.Describe a person you admire.",
+    "14.What advice would you give to someone starting in your field?",
+    "15.What are your thoughts on lifelong learning?",
+    "16.What is a skill you want to develop further?",
+    "17.How do you manage your time effectively?",
+    "18.What is your favorite movie and why?",
+    "19.Describe a culture you admire.",
+    "20.What qualities do you look for in a friend?",
+    "21.How do you define success?",
+    "22.What role does technology play in your life?",
+    "23.If you could travel anywhere, where would you go?",
+    "24.What is your biggest fear and how do you deal with it?",
+    "25.What was the last book you read?",
+];
+
+function startTest() {
+    questionIndex = 0;
+    timeRemaining = 15 * 60; // reset timer to 15 minutes
+    updateTimer();
+    startTimer();
+    micButton.style.display = 'block';
+    nextButton.style.display = 'none';
+    submitButton.style.display = 'none';
+    document.getElementById('take-test-button').style.display = 'none';
+    instructions.style.display = 'none'; // Hide instructions
+
+    // Load questions into the question list
+    loadQuestions();
+    setQuestion();
+}
+
+function loadQuestions() {
+    questionNodesContainer.innerHTML = '';
+    questions.forEach((question, index) => {
+        const questionNode = document.createElement('div');
+        questionNode.className = 'question-node';
+        questionNode.innerText = `Q${index + 1}`; // Display question number
+        questionNode.onclick = () => displayQuestion(index);
+        questionNodesContainer.appendChild(questionNode);
+    });
+}
+
+function setQuestion() {
+    textToSpeak.innerText = questions[questionIndex];
+    micButton.style.display = 'inline-block';
+    nextButton.style.display = 'none';
+    if (questionIndex === questions.length - 1) {
+        nextButton.style.display = 'none';
+        submitButton.style.display = 'inline-block';
+    }
+}
+
+function displayQuestion(index) {
+    questionIndex = index;
+    setQuestion();
+    // Show the answer if it exists
+    if (answers[index]) {
+        reportContainer.innerHTML = `Response: ${answers[index]}`;
+    } else {
+        reportContainer.innerHTML = '';
+    }
+}
+
+function updateTimer() {
+    let minutes = Math.floor(timeRemaining / 60);
+    let seconds = timeRemaining % 60;
+    globalTimer.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function startTimer() {
+    timer = setInterval(() => {
+        if (timeRemaining > 0) {
+            timeRemaining--;
+            updateTimer();
+        } else {
+            clearInterval(timer);
+            alert("Time is up!");
+            submitTest();
+        }
+    }, 1000);
+}
+
+function toggleRecording() {
+    if (micButton.classList.contains('recording')) {
+        // Stop recording
+        mediaRecorder.stop();
+        micButton.classList.remove('recording');
+        micButton.querySelector('#mic-icon').className = 'glyphicon glyphicon-record';
+        nextButton.style.display = 'inline-block';
+    } else {
+        // Start recording
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                micButton.classList.add('recording');
+                micButton.querySelector('#mic-icon').className = 'glyphicon glyphicon-stop';
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    const audioURL = URL.createObjectURL(audioBlob);
+                    const audioElement = document.createElement('audio');
+                    audioElement.controls = true;
+                    audioElement.src = audioURL;
+                    reportContainer.appendChild(audioElement);
+
+                    // Analyze the audio input
+                    const textResponse = await transcribeAudio(audioBlob);
+                    const grammarFeedback = await checkGrammar(textResponse);
+
+                    // Display the feedback
+                    reportContainer.innerHTML += `<p>Transcription: ${textResponse}</p>`;
+                    reportContainer.innerHTML += `<p>Grammar Feedback: ${grammarFeedback}</p>`;
+                    answers[questionIndex] = `Your answer recorded for question ${questionIndex + 1}`;
+
+                    // Change the background color of the completed question node to green
+                    questionNodesContainer.children[questionIndex].style.backgroundColor = 'lightgreen';
+                    questionNodesContainer.children[questionIndex].classList.add('completed');
+                };
+            });
+    }
+}
+
+// Example function to transcribe audio
+async function transcribeAudio(audioBlob) {
+    const formData = new FormData();
+    formData.append('file', audioBlob);
+
+    // Replace with your API endpoint for audio transcription
+    const response = await fetch('YOUR_TRANSCRIPTION_API_ENDPOINT', {
+        method: 'POST',
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error('Transcription failed');
+    }
+
+    const data = await response.json();
+    return data.transcription; // Adjust based on API response structure
+}
+
+// Example function to check grammar
+async function checkGrammar(transcription) {
+    // Replace with your API endpoint for grammar checking
+    const response = await fetch('YOUR_GRAMMAR_CHECK_API_ENDPOINT', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: transcription }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Grammar checking failed');
+    }
+
+    const data = await response.json();
+    return data.feedback; // Adjust based on API response structure
+}
+
+function nextQuestion() {
+    if (questionIndex < questions.length - 1) {
+        questionIndex++;
+        setQuestion();
+        reportContainer.innerHTML = ''; // Clear previous response display
+    }
+}
+
+function submitTest() {
+    clearInterval(timer);
+
+    // Calculate results
+    const totalAnswered = answers.filter(answer => answer).length; // Count non-empty answers
+    const percentage = (totalAnswered / questions.length) * 100; // Calculate percentage
+    let feedback;
+
+    // Generate feedback based on the percentage
+    if (percentage < 50) {
+        feedback = "You may need to practice more.";
+    } else if (percentage < 75) {
+        feedback = "Good job! Keep improving.";
+    } else {
+        feedback = "Excellent work! You're doing great.";
+    }
+
+    // Display results and feedback
+    reportContainer.innerHTML = `
+        <h3>Test Results</h3>
+        <p>You answered ${totalAnswered} out of ${questions.length} questions.</p>
+        <p>Your score: ${percentage.toFixed(2)}%</p>
+        <p>Feedback: ${feedback}</p>
+    `;
+
+    // Optionally, hide the mic button and any other buttons
+    micButton.style.display = 'none';
+    nextButton.style.display = 'none';
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+}
+
+function toggleDropdown() {
+    const dropdown = document.getElementById('accountDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+function logout() {
+    // Handle logout logic here
+    alert("Logged out.");
+}
+
+window.onscroll = function() {
+    const navbar = document.getElementById('navbar');
+    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+};
+
+
+    </script>
+</body>
+</html>

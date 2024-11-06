@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            background-color: #f4f4f9;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1e90ff;
+            padding: 15px 25px;
+            width: 100%;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .heading1 {
+            color: #ffffff;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .navbar .logout {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 80px; /* Added space for navbar */
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-skill-divs {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .skill-box {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 2px solid #1e90ff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .skill-box h3 {
+            margin: 0;
+            font-size: 22px;
+            color: #1e90ff;
+        }
+
+        .skill-box p {
+            font-size: 16px;
+            color: #333333;
+        }
+
+        .form-container {
+            margin-top: 40px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .form-container input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 2px solid #1e90ff;
+            border-radius: 4px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-container button:hover {
+            background-color: #005f99;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border: 2px solid #1e90ff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            background-color: #1e90ff;
+            color: #ffffff;
+            width: 100%;
+            position: relative;
+            bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .test-skill-divs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .skill-box {
+                width: 90%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+       <a href="http://127.0.0.1:5500/adminmain.html"> <h1 class="heading1">S-KILL ADM</h1></a>
+        <button class="logout" onclick="window.location.href='index.html'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </nav>
+
+    <div class="container">
+        <div class="test-skill-divs">
+            <div class="skill-box">
+                <h3>Pronunciation</h3>
+                <p>1. VTU 19215</p>
+                <p>2. VTU 20341</p>
+                <p>3. VTU 22000</p>
+            </div>
+            <div class="skill-box">
+                <h3>Listening</h3>
+                <p>1. VTU 19215</p>
+                <p>2. VTU 20341</p>
+                <p>3. VTU 22000</p>
+            </div>
+            <div class="skill-box">
+                <h3>Speaking</h3>
+                <p>1. VTU 19215</p>
+                <p>2. VTU 20341</p>
+                <p>3. VTU 22000</p>
+            </div>
+            <div class="skill-box">
+                <h3>Writing</h3>
+                <p>1. VTU 19215</p>
+                <p>2. VTU 20341</p>
+                <p>3. VTU 22000</p>
+            </div>
+            <div class="skill-box">
+                <h3>Vocabulary</h3>
+                <p>1. VTU 19215</p>
+                <p>2. VTU 20341</p>
+                <p>3. VTU 22000</p>
+            </div>
+        </div>
+
+        <div class="form-container">
+            <h1>Results</h1>
+            <input type="text" placeholder="Enter VTU number">
+            <button onclick="showResults()">Get Results</button>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <h2>Results for VTU 19215</h2>
+            <p>Pronunciation: 95%</p>
+            <p>Listening: 88%</p>
+            <p>Speaking: 90%</p>
+            <p>Writing: 85%</p>
+            <p>Vocabulary: 92%</p>
+            <p>Total Score: 90%</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2024 S-KILL ADM. All rights reserved.
+    </div>
+
+    <script>
+        function showResults() {
+            var resultsSection = document.getElementById('resultsSection');
+            resultsSection.style.display = 'block';
+
+            var skillDivs = document.querySelector('.test-skill-divs');
+            skillDivs.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

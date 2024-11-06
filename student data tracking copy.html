@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            background-color: #f0f8ff; /* Light background for contrast */
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            background-color:black;
+            padding: 15px 25px;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .navbar .menu {
+            position: absolute;
+            left: 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .navbar .heading1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .navbar .logout {
+            position: absolute;
+            right: 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 250px;
+            height: 100%;
+            background-color: #87cefa;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+            overflow-y: auto;
+            padding-top: 60px;
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: #000000;
+            text-decoration: none;
+            font-size: 18px;
+            border-bottom: 1px solid #dcdcdc;
+            position: relative; /* For ripple effect positioning */
+            overflow: hidden; /* Hide the ripple effect overflow */
+        }
+
+        .sidebar a:hover {
+            background-color: #b0e0e6;
+        }
+
+        .dashboard-content {
+            margin-top: 80px;
+            padding: 20px;
+            text-align: center;
+            position: relative; /* For background animation positioning */
+            z-index: 1;
+        }
+
+        .dashboard-content h1 {
+            font-size: 28px;
+            color: #1e90ff;
+        }
+
+        .test-skill-divisions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .skill-box {
+            width: 18%;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 2px solid #1e90ff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+            min-height: 150px; /* Increase height to accommodate more content */
+            position: relative; /* For ripple effect positioning */
+            overflow: hidden; /* Hide the ripple effect overflow */
+            cursor: pointer; /* Make it clear that these are interactive */
+        }
+
+        .skill-box h3 {
+            font-size: 18px;
+            color: #1e90ff;
+        }
+
+        .skill-box p {
+            color: #333333;
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #1e90ff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+            text-align: left;
+            position: relative;
+        }
+
+        .result-section h2 {
+            font-size: 24px;
+        }
+
+        .result-section .go-back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: black;
+            color: #ffffff;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Ripple Effect CSS */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Background Animation CSS */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0) 50%);
+            animation: ripple 10s infinite;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <button class="menu" onclick="toggleSidebar()"><i class="fas fa-bars"></i> Menu</button>
+       <a href="http://127.0.0.1:5500/adminmain.html"> <h1 class="heading1">ADMIN</h1></a>
+        <button class="logout" onclick="window.location.href='admin signup.html'"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <a href="test.html" onclick="createRipple(event)">Test Your Skills</a>
+        <a href="dashboard.html" onclick="createRipple(event)">Dashboard</a>
+        <a href="#" onclick="createRipple(event)">Profile</a>
+        <a href="#" onclick="createRipple(event)">Settings</a>
+        <a href="#" onclick="createRipple(event)">Help</a>
+    </div>
+
+    <div class="dashboard-content">
+        <h1>Results</h1>
+        <form id="vtu-form">
+            <input type="text" id="vtu-input" placeholder="Enter VTU Number to find the result">
+            <button type="button" onclick="showResults()">Get Results</button>
+        </form>
+
+        <div class="test-skill-divisions" id="skillDivisions">
+            <div class="skill-box" onclick="createRipple(event)">
+                <h3>Pronunciation</h3>
+                <p>VTU 19215 - 85%</p>
+                <p>VTU 20341 - 90%</p>
+                <p>VTU 2200 - 75%</p>
+            </div>
+            <div class="skill-box" onclick="createRipple(event)">
+                <h3>Listening</h3>
+                <p>VTU 2200 - 80%</p>
+                <p>VTU 19215 - 85%</p>
+                <p>VTU 20341 - 88%</p>
+            </div>
+            <div class="skill-box" onclick="createRipple(event)">
+                <h3>Speaking</h3>
+                <p>VTU 20341 - 88%</p>
+                <p>VTU 2200 - 82%</p>
+                <p>VTU 19215 - 78%</p>
+            </div>
+            <div class="skill-box" onclick="createRipple(event)">
+                <h3>Vocabulary</h3>
+                <p>VTU 19215 - 90%</p>
+                <p>VTU 2200 - 85%</p>
+                <p>VTU 20341 - 80%</p>
+            </div>
+            <div class="skill-box" onclick="createRipple(event)">
+                <h3>Writing</h3>
+                <p>VTU 20341 - 88%</p>
+                <p>VTU 19215 - 82%</p>
+                <p>VTU 2200 - 80%</p>
+            </div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <button class="go-back-button" onclick="showAllResults()">Go Back</button>
+            <h2>Results for VTU Number: <span id="vtuResult"></span></h2>
+            <p>Test: Pronunciation | Score: 90%</p>
+            <p>Test: Listening | Score: 85%</p>
+            <p>Test: Speaking | Score: 88%</p>
+            <p>Test: Vocabulary | Score: 80%</p>
+            <p>Test: Writing | Score: 75%</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 S-KILL Dashboard. All Rights Reserved.</p>
+    </div>
+
+    <!-- Background Animation -->
+    <div class="background-animation"></div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function showResults() {
+            var vtuInput = document.getElementById("vtu-input").value;
+            document.getElementById("vtuResult").innerText = vtuInput;
+            document.getElementById("resultSection").style.display = "block";
+            document.getElementById("skillDivisions").style.display = "none";
+        }
+
+        function showAllResults() {
+            document.getElementById("resultSection").style.display = "none";
+            document.getElementById("skillDivisions").style.display = "flex";
+        }
+
+        // Function to create the ripple effect
+        function createRipple(event) {
+            var target = event.currentTarget;
+            var ripple = document.createElement("span");
+            var diameter = Math.max(target.clientWidth, target.clientHeight);
+            var radius = diameter / 2;
+
+            ripple.style.width = ripple.style.height = diameter + "px";
+            ripple.style.left = event.clientX - target.getBoundingClientRect().left - radius + "px";
+            ripple.style.top = event.clientY - target.getBoundingClientRect().top - radius + "px";
+            ripple.classList.add("ripple");
+
+            var existingRipple = target.getElementsByClassName("ripple")[0];
+            if (existingRipple) {
+                existingRipple.remove();
+            }
+
+            target.appendChild(ripple);
+        }
+    </script>
+</body>
+</html>

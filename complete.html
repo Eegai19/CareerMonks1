@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+        }
+        header, footer {
+            background-color: #1e90ff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .section {
+            background-color: #ffffff;
+            border: 2px solid #1e90ff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            display: none; /* Hide sections initially */
+        }
+        .section h2 {
+            margin: 0;
+        }
+        .start-btn, .submit-btn {
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            display: none; /* Hide initially */
+        }
+        .progress {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .report {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e0ffe0;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>S-KILL Complete Test</h1>
+</header>
+
+<!-- Listening Section -->
+<div class="section" id="listening-section">
+    <h2>Listening</h2>
+    <audio id="listening-audio" controls>
+        <source src="audio1.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+    <div>
+        <label for="listening-answer">Your answer:</label>
+        <input type="text" id="listening-answer">
+    </div>
+    <button type="button" class="submit-btn" onclick="submitListeningTest()">Submit Listening Test</button>
+    <div id="listening-result" class="result"></div>
+</div>
+
+<!-- Writing Section -->
+<div class="section" id="writing-section">
+    <h2>Writing</h2>
+    <textarea id="writing-input" rows="5" style="width: 100%;"></textarea>
+    <button type="button" class="submit-btn" onclick="submitWritingTest()">Submit Writing Test</button>
+    <div id="writing-result" class="result"></div>
+</div>
+
+<!-- Pronunciation Section -->
+<div class="section" id="pronunciation-section">
+    <h2>Pronunciation</h2>
+    <div>
+        <label for="pronunciation-answer">Your answer:</label>
+        <input type="text" id="pronunciation-answer">
+    </div>
+    <button type="button" class="submit-btn" onclick="submitPronunciationTest()">Submit Pronunciation Test</button>
+    <div id="pronunciation-result" class="result"></div>
+</div>
+
+<!-- Vocabulary Section -->
+<div class="section" id="vocabulary-section">
+    <h2>Vocabulary</h2>
+    <div>
+        <label for="vocabulary-answer">Your answer:</label>
+        <input type="text" id="vocabulary-answer">
+    </div>
+    <button type="button" class="submit-btn" onclick="submitVocabularyTest()">Submit Vocabulary Test</button>
+    <div id="vocabulary-result" class="result"></div>
+</div>
+
+<!-- Speaking Section -->
+<div class="section" id="speaking-section">
+    <h2>Speaking</h2>
+    <div>
+        <label for="speaking-answer">Your answer:</label>
+        <input type="text" id="speaking-answer">
+    </div>
+    <button type="button" class="submit-btn" onclick="submitSpeakingTest()">Submit Speaking Test</button>
+    <div id="speaking-result" class="result"></div>
+</div>
+
+<button id="start-test-btn" class="start-btn" onclick="startTest()">Start All Tests</button>
+<div class="progress" id="progress"></div>
+<div class="report" id="report"></div>
+
+<footer>
+    <p>&copy; 2024 S-KILL. All rights reserved.</p>
+</footer>
+
+<script>
+    let scores = {
+        listening: null,
+        writing: null,
+        pronunciation: null,
+        vocabulary: null,
+        speaking: null,
+    };
+    let currentSectionIndex = -1; // Start from -1 to handle first click
+    const sections = ['listening', 'writing', 'pronunciation', 'vocabulary', 'speaking'];
+
+    function startTest() {
+        currentSectionIndex = 0; // Reset index to start from the first section
+        startNextSection();
+    }
+
+    function startNextSection() {
+        // Hide all sections
+        sections.forEach(sec => document.getElementById(sec + '-section').style.display = 'none');
+        // Show the current section
+        document.getElementById(sections[currentSectionIndex] + '-section').style.display = 'block';
+        // Show the submit button for the current section
+        document.querySelector(`#${sections[currentSectionIndex]}-section .submit-btn`).style.display = 'block';
+        // Update progress
+        updateProgress();
+    }
+
+    function submitListeningTest() {
+        scores.listening = Math.floor(Math.random() * 100); // Simulated score
+        document.getElementById('listening-result').innerText = `Score: ${scores.listening}`;
+        completeSection();
+    }
+
+    function submitWritingTest() {
+        scores.writing = Math.floor(Math.random() * 100); // Simulated score
+        document.getElementById('writing-result').innerText = `Score: ${scores.writing}`;
+        completeSection();
+    }
+
+    function submitPronunciationTest() {
+        scores.pronunciation = Math.floor(Math.random() * 100); // Simulated score
+        document.getElementById('pronunciation-result').innerText = `Score: ${scores.pronunciation}`;
+        completeSection();
+    }
+
+    function submitVocabularyTest() {
+        scores.vocabulary = Math.floor(Math.random() * 100); // Simulated score
+        document.getElementById('vocabulary-result').innerText = `Score: ${scores.vocabulary}`;
+        completeSection();
+    }
+
+    function submitSpeakingTest() {
+        scores.speaking = Math.floor(Math.random() * 100); // Simulated score
+        document.getElementById('speaking-result').innerText = `Score: ${scores.speaking}`;
+        completeSection();
+    }
+
+    function completeSection() {
+        // Hide the current section
+        document.getElementById(sections[currentSectionIndex] + '-section').style.display = 'none';
+        // Check if there are more sections
+        if (currentSectionIndex + 1 < sections.length) {
+            currentSectionIndex++;
+            startNextSection();
+        } else {
+            showReport();
+        }
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const percentage = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
+        document.getElementById('progress').innerText = `Progress: ${percentage}%`;
+    }
+
+    function showReport() {
+        let reportContent = '<h2>Test Report</h2>';
+        reportContent += `<p>Listening Score: ${scores.listening}</p>`;
+        reportContent += `<p>Writing Score: ${scores.writing}</p>`;
+        reportContent += `<p>Pronunciation Score: ${scores.pronunciation}</p>`;
+        reportContent += `<p>Vocabulary Score: ${scores.vocabulary}</p>`;
+        reportContent += `<p>Speaking Score: ${scores.speaking}</p>`;
+        document.getElementById('report').innerHTML = reportContent;
+        document.getElementById('report').style.display = 'block';
+    }
+</script>
+</body>
+</html>

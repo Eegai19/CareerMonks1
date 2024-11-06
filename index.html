@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S-KILL Admin</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            background: #eaeaea;
+        }
+
+        .ripple-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: #4a90e2;
+            animation: ripple 15s infinite;
+            box-shadow: 0 0 1px 0 #4a90e2;
+        }
+
+        .small { width: 200px; height: 200px; left: -100px; bottom: -100px; }
+        .medium { width: 400px; height: 400px; left: -200px; bottom: -200px; }
+        .large { width: 600px; height: 600px; left: -300px; bottom: -300px; }
+        .xlarge { width: 800px; height: 800px; left: -400px; bottom: -400px; }
+        .xxlarge { width: 1000px; height: 1000px; left: -500px; bottom: -500px; }
+
+        .shade1 { opacity: 0.2; }
+        .shade2 { opacity: 0.5; }
+        .shade3 { opacity: 0.7; }
+        .shade4 { opacity: 0.8; }
+        .shade5 { opacity: 0.9; }
+
+        @keyframes ripple {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(0.8); }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            background-color: #4a90e2;
+            padding: 15px 25px;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar .heading1 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .wholebar {
+            width: 100%;
+            height: calc(100vh - 60px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #4a90e2;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .signin, .login {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .signin.active, .login.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .f1, .f2, .f3, .login .f4, .login .f5 {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #4a90e2;
+            border-radius: 5px;
+            transition: width 0.3s ease, border-color 0.3s ease;
+        }
+
+        .f1:hover, .f2:hover, .f3:hover, .login .f4:hover, .login .f5:hover,
+        .f1:focus, .f2:focus, .f3:focus, .login .f4:focus, .login .f5:focus {
+            width: 300px;
+            border-color: #2980b9;
+        }
+
+        .submit2, .submit1 {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .submit2:hover, .submit1:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .toggle-form {
+            cursor: pointer;
+            color: #4a90e2;
+            text-decoration: underline;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin: 5px 10px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="ripple-background">
+        <div class="circle xxlarge shade1"></div>
+        <div class="circle xlarge shade2"></div>
+        <div class="circle large shade3"></div>
+        <div class="circle medium shade4"></div>
+        <div class="circle small shade5"></div>
+    </div>
+
+    <div class="navbar">
+        <div class="heading1">S-KILL ADM</div>
+    </div>
+
+    <div class="wholebar">
+        <div class="form-container">
+            <form id="signupForm" class="signin active">
+                <h1>Sign Up</h1>
+                <input class="f1" id="name" type="text" placeholder="Enter your name" required>
+                <input class="f2" id="email" type="email" placeholder="Enter your email" required>
+                <input class="f3" id="password" type="password" placeholder="Enter your password" required>
+                <button class="submit2" type="submit">Sign Up</button>
+                <p class="toggle-form" onclick="toggleForm('login')">Already have an account? Log In</p>
+                <p><a href="admin_signup.html">Admin portal</a></p>
+            </form>
+
+            <form id="loginForm" class="login">
+                <h1>Login</h1>
+                <input class="f4" id="loginEmail" type="email" placeholder="Enter your email" required>
+                <input class="f5" id="loginPassword" type="password" placeholder="Enter your password" required>
+                <button class="submit1" type="submit">Login</button>
+                <p class="toggle-form" onclick="toggleForm('signin')">Don't have an account? Sign Up</p>
+                <p><a href="admin signup.html">Admin portal</a></p>
+                <p><a href="#" onclick="forgotPassword()">Forgot Password?</a></p>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <span><a href="https://linkedin.com/" aria-label="LinkedIn">LinkedIn</a></span>
+        <span><a href="https://github.com/" aria-label="GitHub">GitHub</a></span>
+        <span><a href="https://instagram.com/" aria-label="Instagram">Instagram</a></span>
+        <span><a href="mailto:your-email@example.com" aria-label="Mail">Mail</a></span>
+        <span><a href="https://youtube.com/" aria-label="Youtube">YouTube</a></span>
+        <p>&copy; 2023 Soft Skill Enhancement Platform. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function toggleForm(formType) {
+            const signinForm = document.querySelector('.signin');
+            const loginForm = document.querySelector('.login');
+
+            if (formType === 'login') {
+                signinForm.classList.remove('active');
+                loginForm.classList.add('active');
+            } else {
+                loginForm.classList.remove('active');
+                signinForm.classList.add('active');
+            }
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            fetch('http://localhost:5000/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Sign up successful! You can now log in.');
+                    toggleForm('login');
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Login successful!');
+                    window.location.href = 'mainest.html'; // Redirect to mainest.html
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function forgotPassword() {
+            alert('Password recovery options will be implemented soon.');
+        }
+    </script>
+</body>
+</html>

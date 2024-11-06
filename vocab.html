@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightblue;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #1e90ff;
+        }
+
+        .content {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            margin-top: 40px; /* Adjusted for navbar height */
+            margin-left: 220px; /* Space for sidebar */
+        }
+
+        .left-side {
+            flex: 80%;
+            padding-right: 20px;
+        }
+
+        .right-side {
+            flex: 20%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .question-box {
+            background-color: #ffffff;
+            padding: 20px;
+            border: 2px solid #1e90ff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            height: 80vh;
+            font-size: large;
+        }
+
+        .node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #1e90ff;
+            margin: 5px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+        }
+
+        .node.completed {
+            background-color: lightgreen;
+            color: white;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            background-color: #1e90ff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff4500;
+            margin-bottom: 10px;
+        }
+
+        .nav-bar {
+            background-color: transparent;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            color: black;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-bar.scrolled {
+            background-color: rgba(15, 252, 190, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-button {
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .account-icon {
+            color: white;
+            position: relative;
+            cursor: pointer;
+            margin-right: 2cm;
+        }
+
+        .account-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 10px;
+            z-index: 1001;
+        }
+
+        .account-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .account-dropdown a:hover {
+            background: #f0f0f0;
+        }
+
+        .logo {
+            font-size: x-large;
+        }
+
+        .logo a {
+            color: white;
+            text-decoration: none; /* Remove underline */
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            left: -250px; 
+            transition: left 0.3s ease;
+            z-index: 999;
+            font-size: large;
+            margin-top: 40px;
+        }
+
+        .sidebar.active {
+            left: 0; 
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #4CAF50;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin: 5px 10px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="nav-bar" id="navbar">
+        <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
+        <div class="logo"><a href="mainest.html" style="color: white; font-size: 32px; text-decoration: none;">CareerMonks</a></div>
+        <div class="account-icon" onclick="toggleDropdown()">
+          Account
+          <div class="account-dropdown" id="accountDropdown">
+            <a href="#" id="emailDisplay">user@example.com</a>
+            <a href="index.html" onclick="logout()">Logout</a>
+          </div>
+        </div>
+      </nav>
+      
+      <div id="sidebar" class="sidebar">
+        <a href="mainest.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="course.html">Courses</a>
+        <a href="test.html">Take Test</a>
+      </div>
+
+    <!-- Content -->
+    <div class="content">
+        <!-- Left Side: Questions -->
+        <div class="left-side">
+            <div class="timer" id="timer">Time Remaining: 10:00</div>
+            <div id="question-box" class="question-box">
+                <p id="question-text">Click 'Start Test' to begin.</p>
+                <div id="answers"></div>
+                <button id="next-btn" class="submit-btn" style="display: none;" onclick="nextQuestion()">Next</button>
+                <button id="start-btn" class="submit-btn" onclick="startTest()">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Right Side: Question Nodes -->
+        <div class="right-side" id="question-nodes">
+            <!-- Nodes will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 S-KILL Enhancement Platform. All rights reserved.</p>
+      </footer>
+
+    <script>
+        const questions = [
+            { question: "What is the meaning of 'reverence'?", answers: ["Disrespect", "Honor", "Hatred", "Fear"], correct: 1 },
+            { question: "What is the meaning of 'benevolent'?", answers: ["Kind", "Hostile", "Indifferent", "Malicious"], correct: 0 },
+            { question: "What is the meaning of 'ephemeral'?", answers: ["Eternal", "Temporary", "Endless", "Infinite"], correct: 1 },
+            { question: "What is the meaning of 'eloquent'?", answers: ["Unclear", "Fluent", "Silent", "Indifferent"], correct: 1 },
+            { question: "What is the meaning of 'resilient'?", answers: ["Weak", "Stubborn", "Flexible", "Delicate"], correct: 2 },
+            { question: "What is the meaning of 'ambiguous'?", answers: ["Clear", "Uncertain", "Specific", "Obvious"], correct: 1 },
+            { question: "What is the meaning of 'zealous'?", answers: ["Lackluster", "Ardent", "Indifferent", "Careless"], correct: 1 },
+            { question: "What is the meaning of 'pragmatic'?", answers: ["Idealistic", "Practical", "Irrational", "Emotional"], correct: 1 },
+            { question: "What is the meaning of 'eclectic'?", answers: ["Selective", "Narrow", "Limited", "Fixed"], correct: 0 },
+            { question: "What is the meaning of 'fickle'?", answers: ["Loyal", "Constant", "Capricious", "Stable"], correct: 2 },
+            { question: "What is the meaning of 'candid'?", answers: ["Dishonest", "Sincere", "Secretive", "Cautious"], correct: 1 },
+            { question: "What is the meaning of 'meticulous'?", answers: ["Careless", "Thorough", "Rushed", "Haphazard"], correct: 1 },
+            { question: "What is the meaning of 'sagacious'?", answers: ["Foolish", "Wise", "Uninformed", "Naive"], correct: 1 },
+            { question: "What is the meaning of 'fortuitous'?", answers: ["Unfortunate", "Accidental", "Intentional", "Predictable"], correct: 1 },
+            { question: "What is the meaning of 'malevolent'?", answers: ["Benevolent", "Kind", "Harmful", "Helpful"], correct: 2 },
+            { question: "What is the meaning of 'supercilious'?", answers: ["Humble", "Arrogant", "Modest", "Timid"], correct: 1 },
+            { question: "What is the meaning of 'insidious'?", answers: ["Harmless", "Treacherous", "Friendly", "Inviting"], correct: 1 },
+            { question: "What is the meaning of 'ubiquitous'?", answers: ["Rare", "Common", "Unique", "Special"], correct: 1 },
+            { question: "What is the meaning of 'obfuscate'?", answers: ["Clarify", "Confuse", "Explain", "Simplify"], correct: 1 },
+            { question: "What is the meaning of 'nefarious'?", answers: ["Good", "Wicked", "Virtuous", "Noble"], correct: 1 },
+            { question: "What is the meaning of 'quixotic'?", answers: ["Practical", "Idealistic", "Realistic", "Logical"], correct: 1 },
+            { question: "What is the meaning of 'vociferous'?", answers: ["Quiet", "Loud", "Silent", "Subtle"], correct: 1 },
+            { question: "What is the meaning of 'intrepid'?", answers: ["Cowardly", "Brave", "Fearful", "Timid"], correct: 1 },
+            { question: "What is the meaning of 'diligent'?", answers: ["Lazy", "Hardworking", "Careless", "Indifferent"], correct: 1 },
+            { question: "What is the meaning of 'tenacious'?", answers: ["Weak", "Persistent", "Lazy", "Indifferent"], correct: 1 },
+            { question: "What is the meaning of 'ameliorate'?", answers: ["Worsen", "Improve", "Neglect", "Destroy"], correct: 1 },
+            { question: "What is the meaning of 'ascertain'?", answers: ["Assume", "Verify", "Guess", "Doubt"], correct: 1 },
+            { question: "What is the meaning of 'soporific'?", answers: ["Exciting", "Boring", "Sleep-inducing", "Lively"], correct: 2 },
+            { question: "What is the meaning of 'surreptitious'?", answers: ["Open", "Secret", "Honest", "Candid"], correct: 1 },
+            { question: "What is the meaning of 'interminable'?", answers: ["Limited", "Endless", "Brief", "Short"], correct: 1 },
+            { question: "What is the meaning of 'alacrity'?", answers: ["Reluctance", "Eagerness", "Indifference", "Apathy"], correct: 1 },
+            { question: "What is the meaning of 'disparate'?", answers: ["Similar", "Different", "Identical", "Alike"], correct: 1 },
+            { question: "What is the meaning of 'fortitude'?", answers: ["Fear", "Courage", "Weakness", "Apathy"], correct: 1 },
+            { question: "What is the meaning of 'fervent'?", answers: ["Apathetic", "Passionate", "Indifferent", "Cold"], correct: 1 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let answersGiven = [];
+        let timer; 
+
+        function startTest() {
+            currentQuestionIndex = 0;
+            answersGiven = [];
+            document.getElementById("question-nodes").innerHTML = '';
+            document.getElementById("next-btn").style.display = "none";
+            document.getElementById("start-btn").style.display = "none";
+            loadQuestion();
+            startTimer(600); // 10 minutes
+        }
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestionIndex];
+            document.getElementById("question-text").textContent = questionData.question;
+            const answersContainer = document.getElementById("answers");
+            answersContainer.innerHTML = ''; // Clear previous answers
+
+            questionData.answers.forEach((answer, index) => {
+                const label = document.createElement("label");
+                label.style.display = "block";
+
+                const radioInput = document.createElement("input");
+                radioInput.type = "radio";
+                radioInput.name = "answer";
+                radioInput.value = index;
+                radioInput.onclick = () => handleAnswerSelection(index); // Capture the selected answer
+
+                label.appendChild(radioInput);
+                label.appendChild(document.createTextNode(answer));
+                answersContainer.appendChild(label);
+            });
+
+            updateQuestionNodes();
+        }
+
+        function handleAnswerSelection(selectedAnswer) {
+            answersGiven[currentQuestionIndex] = selectedAnswer;
+            document.getElementById("next-btn").style.display = "inline-block"; // Show Next button
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+                document.getElementById("next-btn").style.display = "none"; // Hide Next button
+            } else {
+                endTest();
+            }
+        }
+
+        function endTest() {
+            clearInterval(timer);
+            let score = 0;
+            answersGiven.forEach((answer, index) => {
+                if (answer === questions[index].correct) {
+                    score++;
+                }
+            });
+            alert("Your score is: " + score + "/" + questions.length);
+        }
+
+        function startTimer(duration) {
+            let remainingTime = duration;
+            const timerDisplay = document.getElementById("timer");
+
+            timer = setInterval(() => {
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                timerDisplay.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                if (--remainingTime < 0) {
+                    clearInterval(timer);
+                    endTest();
+                }
+            }, 1000);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("active");
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById("accountDropdown");
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function logout() {
+            alert("Logging out...");
+            // Implement logout logic here
+        }
+
+        
+        function updateQuestionNodes() {
+    const questionNodesContainer = document.getElementById("question-nodes");
+    questionNodesContainer.innerHTML = ''; // Clear previous nodes
+
+    questions.forEach((_, index) => {
+        const node = document.createElement("div");
+        node.className = "node" + (index < currentQuestionIndex ? " completed" : "");
+        
+        // Add active class for the current question
+        if (index === currentQuestionIndex) {
+            node.classList.add("active");
+        }
+
+        node.textContent = index + 1; // Question number
+        questionNodesContainer.appendChild(node);
+    });
+}
+
+
+        // Event listener for scrolling navbar
+        window.onscroll = function () {
+            const navbar = document.getElementById("navbar");
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        };
+    </script>
+</body>
+</html>

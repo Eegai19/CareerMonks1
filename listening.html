@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Listening Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: lightblue;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .logo {
+            font-size: x-large;
+        }
+
+        .logo a {
+            color: white;
+            text-decoration: none; /* Remove underline */
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            left: -250px; 
+            transition: left 0.3s ease;
+            z-index: 999;
+            font-size: large;
+            margin-top: 40px;
+        }
+
+        .sidebar.active {
+            left: 0; 
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #4CAF50;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            margin: 5px 10px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        .nav-bar {
+            background-color: transparent;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            color: black;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-bar.scrolled {
+            background-color: rgba(15, 252, 190, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-button {
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .account-icon {
+            color: white;
+            position: relative;
+            cursor: pointer;
+            margin-right: 2cm;
+        }
+
+        .account-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 10px;
+            z-index: 1001;
+        }
+
+        .account-dropdown a {
+            display: block;
+            padding: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .account-dropdown a:hover {
+            background: #f0f0f0;
+        }
+
+        #app {
+            flex: 1;
+            width: 100%; /* Make the app take full width */
+            max-width: 800px; /* Optionally adjust the max width */
+            margin: 0 auto; /* Center the app */
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center; /* Center the title */
+        }
+
+        button {
+            margin: 10px;
+            margin-left: 35%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block; /* Ensure buttons are displayed as block elements */
+            width: 25%; /* Make buttons take full width */
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #questions-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar" id="navbar">
+        <div class="menu-button" onclick="toggleSidebar()">☰ Menu</div>
+        <div class="logo"><a href="mainest.html" style="color: white; font-size: 32px; text-decoration: none;">CareerMonks</a></div>
+        <div class="account-icon" onclick="toggleDropdown()">
+            Account
+            <div class="account-dropdown" id="accountDropdown">
+                <a href="#" id="emailDisplay">user@example.com</a>
+                <a href="index.html" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="sidebar" class="sidebar">
+        <a href="mainest.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="course.html">Courses</a>
+        <a href="test.html">Take Test</a>
+    </div>
+
+    <div id="app">
+        <!-- Part A Section -->
+        <section id="part-a-section">
+            <h2>Part A: Listen and Repeat</h2>
+            <audio id="audio-player" controls style="margin-left: 29%;">
+                <source id="audio-source" src="audio1.wav" type="audio/wav">
+                Your browser does not support the audio tag.
+            </audio>
+            <button id="start-listening">Start Recording</button>
+            <button id="stop-listening" disabled>Stop Recording</button>
+            <button id="next-button" disabled>Next</button>
+            <button id="go-to-part-b-button" class="hidden">Go to Part B</button>
+        </section>
+
+        <!-- Part B Section -->
+        <section id="part-b-section" class="hidden">
+            <h2>Part B: Long Audio with MCQs</h2>
+            <audio id="part-b-audio-player" controls style="margin-left: 30%;">
+                <source id="part-b-audio-source" src="long_audio1.wav" type="audio/wav">
+                Your browser does not support the audio tag.
+            </audio>
+            <div id="questions-container" style="margin-left: 30%;"></div>
+            <button id="next-question-button" disabled>Next Question</button>
+            <button id="next-audio-button" class="hidden">Next Audio</button>
+        </section>
+
+        <div id="report-container"></div>
+    </div>
+    <footer>
+        <p>&copy; 2024 S-KILL Enhancement Platform | <a href="#" style="color: white;">Privacy Policy</a> | <a href="#" style="color: white;">Terms of Service</a></p>
+    </footer>
+    <script>
+    function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+}
+
+function toggleDropdown() {
+    const dropdown = document.getElementById('accountDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+function toggleActive(card) {
+    card.classList.toggle('active');
+}
+
+function logout() {
+    alert('Logging out...');
+}
+
+window.onclick = function(event) {
+    if (!event.target.matches('.account-icon')) {
+        var dropdowns = document.getElementsByClassName("account-dropdown");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+// Part A: Listen and Repeat
+const audioPlayer = document.getElementById('audio-player');
+const startListeningButton = document.getElementById('start-listening');
+const stopListeningButton = document.getElementById('stop-listening');
+const nextButton = document.getElementById('next-button');
+const goToPartBButton = document.getElementById('go-to-part-b-button');
+const partASection = document.getElementById('part-a-section');
+const partBSection = document.getElementById('part-b-section');
+const reportContainer = document.getElementById('report-container');
+
+const audioFiles = ['audio1.wav', 'audio2.wav', 'audio3.wav', 'audio4.wav', 'audio5.wav'];
+let currentAudioIndex = 0;
+
+startListeningButton.addEventListener('click', async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.start();
+    stopListeningButton.disabled = false;
+    mediaRecorder.onstop = () => {};
+});
+
+stopListeningButton.addEventListener('click', () => {
+    nextButton.disabled = false;
+    startListeningButton.disabled = true;
+    stopListeningButton.disabled = true;
+    goToPartBButton.classList.remove('hidden');
+});
+
+nextButton.addEventListener('click', () => {
+    currentAudioIndex++;
+    if (currentAudioIndex < audioFiles.length) {
+        audioPlayer.src = audioFiles[currentAudioIndex];
+        audioPlayer.play();
+        startListeningButton.disabled = false;
+        nextButton.disabled = true;
+    } else {
+        partASection.classList.add('hidden');
+        partBSection.classList.remove('hidden');
+        audioPlayer.pause(); 
+        loadPartBQuestions(); // Load Part B questions on section show
+    }
+});
+
+goToPartBButton.addEventListener('click', () => {
+    partASection.classList.add('hidden');
+    partBSection.classList.remove('hidden');
+    audioPlayer.pause();
+    loadPartBQuestions();
+});
+
+// Part B: Questions and Audio
+const partBQuestions = [
+    // Questions for long_audio1.wav
+    [
+        { question: "What is the main topic discussed?", options: ["Topic 1", "Topic 2", "Topic 3", "Topic 4"], correct: "Topic 1" },
+        { question: "What is mentioned as a key point?", options: ["Point A", "Point B", "Point C", "Point D"], correct: "Point A" },
+        { question: "Who is the speaker?", options: ["Person 1", "Person 2", "Person 3", "Person 4"], correct: "Person 1" },
+        { question: "What recommendation is given?", options: ["Recommendation A", "Recommendation B", "Recommendation C", "Recommendation D"], correct: "Recommendation A" },
+        { question: "What is the conclusion drawn?", options: ["Conclusion A", "Conclusion B", "Conclusion C", "Conclusion D"], correct: "Conclusion A" },
+        { question: "Which example is used?", options: ["Example 1", "Example 2", "Example 3", "Example 4"], correct: "Example 1" },
+        { question: "What issue is addressed?", options: ["Issue A", "Issue B", "Issue C", "Issue D"], correct: "Issue A" },
+        { question: "What solution is proposed?", options: ["Solution 1", "Solution 2", "Solution 3", "Solution 4"], correct: "Solution 1" },
+        { question: "How does the speaker feel about the topic?", options: ["Positive", "Negative", "Neutral", "Uncertain"], correct: "Positive" },
+        { question: "What action is suggested?", options: ["Action 1", "Action 2", "Action 3", "Action 4"], correct: "Action 1" }
+    ],
+    // Questions for long_audio2.wav
+    [
+        { question: "What is the focus of the audio?", options: ["Focus 1", "Focus 2", "Focus 3", "Focus 4"], correct: "Focus 1" },
+        { question: "What data is presented?", options: ["Data A", "Data B", "Data C", "Data D"], correct: "Data A" },
+        { question: "Which outcome is highlighted?", options: ["Outcome A", "Outcome B", "Outcome C", "Outcome D"], correct: "Outcome A" },
+        { question: "What trend is observed?", options: ["Trend 1", "Trend 2", "Trend 3", "Trend 4"], correct: "Trend 1" },
+        { question: "What is the speaker's perspective?", options: ["Perspective A", "Perspective B", "Perspective C", "Perspective D"], correct: "Perspective A" },
+        { question: "What implication is discussed?", options: ["Implication 1", "Implication 2", "Implication 3", "Implication 4"], correct: "Implication 1" },
+        { question: "Which demographic is referenced?", options: ["Demographic 1", "Demographic 2", "Demographic 3", "Demographic 4"], correct: "Demographic 1" },
+        { question: "What recommendation is made?", options: ["Recommendation A", "Recommendation B", "Recommendation C", "Recommendation D"], correct: "Recommendation A" },
+        { question: "What call to action is given?", options: ["Action 1", "Action 2", "Action 3", "Action 4"], correct: "Action 1" },
+        { question: "What conclusion is reached?", options: ["Conclusion 1", "Conclusion 2", "Conclusion 3", "Conclusion 4"], correct: "Conclusion 1" }
+    ],
+    // Questions for long_audio3.wav
+    [
+        { question: "What issue is explored?", options: ["Issue 1", "Issue 2", "Issue 3", "Issue 4"], correct: "Issue 1" },
+        { question: "Which method is discussed?", options: ["Method A", "Method B", "Method C", "Method D"], correct: "Method A" },
+        { question: "What result is highlighted?", options: ["Result A", "Result B", "Result C", "Result D"], correct: "Result A" },
+        { question: "What challenge is mentioned?", options: ["Challenge 1", "Challenge 2", "Challenge 3", "Challenge 4"], correct: "Challenge 1" },
+        { question: "What potential is discussed?", options: ["Potential A", "Potential B", "Potential C", "Potential D"], correct: "Potential A" },
+        { question: "What example is used?", options: ["Example 1", "Example 2", "Example 3", "Example 4"], correct: "Example 1" },
+        { question: "What recommendation is provided?", options: ["Recommendation 1", "Recommendation 2", "Recommendation 3", "Recommendation 4"], correct: "Recommendation 1" },
+        { question: "What future trend is suggested?", options: ["Trend A", "Trend B", "Trend C", "Trend D"], correct: "Trend A" },
+        { question: "What conclusion is drawn?", options: ["Conclusion A", "Conclusion B", "Conclusion C", "Conclusion D"], correct: "Conclusion A" },
+        { question: "What action is proposed?", options: ["Action 1", "Action 2", "Action 3", "Action 4"], correct: "Action 1" }
+    ],
+    // Questions for long_audio4.wav
+    [
+        { question: "What key point is made?", options: ["Point 1", "Point 2", "Point 3", "Point 4"], correct: "Point 1" },
+        { question: "What example is used?", options: ["Example 1", "Example 2", "Example 3", "Example 4"], correct: "Example 1" },
+        { question: "What conclusion is reached?", options: ["Conclusion A", "Conclusion B", "Conclusion C", "Conclusion D"], correct: "Conclusion A" },
+        { question: "What recommendation is given?", options: ["Recommendation A", "Recommendation B", "Recommendation C", "Recommendation D"], correct: "Recommendation A" },
+        { question: "What challenge is discussed?", options: ["Challenge A", "Challenge B", "Challenge C", "Challenge D"], correct: "Challenge A" },
+        { question: "What trend is highlighted?", options: ["Trend 1", "Trend 2", "Trend 3", "Trend 4"], correct: "Trend 1" },
+        { question: "What issue is addressed?", options: ["Issue A", "Issue B", "Issue C", "Issue D"], correct: "Issue A" },
+        { question: "What solution is proposed?", options: ["Solution 1", "Solution 2", "Solution 3", "Solution 4"], correct: "Solution 1" },
+        { question: "What is the conclusion drawn?", options: ["Conclusion 1", "Conclusion 2", "Conclusion 3", "Conclusion 4"], correct: "Conclusion 1" },
+        { question: "What action is recommended?", options: ["Action A", "Action B", "Action C", "Action D"], correct: "Action A" }
+    ],
+    // Questions for long_audio5.wav
+    [
+        { question: "What was the speaker's main argument?", options: ["Argument A", "Argument B", "Argument C", "Argument D"], correct: "Argument A" },
+        { question: "What evidence is presented?", options: ["Evidence A", "Evidence B", "Evidence C", "Evidence D"], correct: "Evidence A" },
+        { question: "What conclusion does the speaker draw?", options: ["Conclusion A", "Conclusion B", "Conclusion C", "Conclusion D"], correct: "Conclusion A" },
+        { question: "What is the recommended course of action?", options: ["Action A", "Action B", "Action C", "Action D"], correct: "Action A" },
+        { question: "What assumption is made?", options: ["Assumption 1", "Assumption 2", "Assumption 3", "Assumption 4"], correct: "Assumption 1" },
+        { question: "What implication is discussed?", options: ["Implication A", "Implication B", "Implication C", "Implication D"], correct: "Implication A" },
+        { question: "What alternative is suggested?", options: ["Alternative 1", "Alternative 2", "Alternative 3", "Alternative 4"], correct: "Alternative 1" },
+        { question: "What future trend is predicted?", options: ["Trend A", "Trend B", "Trend C", "Trend D"], correct: "Trend A" },
+        { question: "What critique is offered?", options: ["Critique A", "Critique B", "Critique C", "Critique D"], correct: "Critique A" },
+        { question: "What key insight is shared?", options: ["Insight A", "Insight B", "Insight C", "Insight D"], correct: "Insight A" }
+    ]
+];
+
+const partBAudioFiles = ['long_audio1.wav', 'long_audio2.wav', 'long_audio3.wav', 'long_audio4.wav', 'long_audio5.wav'];
+let currentPartBAudioIndex = 0;
+let currentQuestionIndex = 0;
+let score = 0;
+
+// Load the initial question when Part B is activated
+function loadPartBQuestions() {
+    currentPartBAudioIndex = 0; // Reset to the first audio
+    currentQuestionIndex = 0; // Reset to the first question
+    score = 0; // Reset score
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const questionData = partBQuestions[currentPartBAudioIndex][currentQuestionIndex];
+    const questionsContainer = document.getElementById('questions-container');
+    questionsContainer.innerHTML = '';
+
+    // Create a question element
+    const questionElement = document.createElement('div');
+    questionElement.innerHTML = `<p>${questionData.question}</p>`;
+    questionsContainer.appendChild(questionElement);
+
+    // Create options for the question
+    questionData.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.innerHTML = `
+            <input type="radio" name="question" value="${option}" id="option${index}">
+            <label for="option${index}">${option}</label>
+        `;
+        questionsContainer.appendChild(optionElement);
+    });
+
+    // Disable the button until an option is selected
+    document.getElementById('next-question-button').disabled = true;
+
+    // Add event listener to radio buttons
+    const radioButtons = document.querySelectorAll('input[name="question"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => {
+            document.getElementById('next-question-button').disabled = false;
+        });
+    });
+}
+
+// Check for user selection
+const nextQuestionButton = document.getElementById('next-question-button');
+nextQuestionButton.addEventListener('click', () => {
+    const selectedOption = document.querySelector('input[name="question"]:checked');
+    if (selectedOption) {
+        const userAnswer = selectedOption.value;
+        const correctAnswer = partBQuestions[currentPartBAudioIndex][currentQuestionIndex].correct;
+
+        // Increment score if the answer is correct
+        if (userAnswer === correctAnswer) {
+            score++;
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < partBQuestions[currentPartBAudioIndex].length) {
+            loadQuestion();
+        } else {
+            currentPartBAudioIndex++;
+            if (currentPartBAudioIndex < partBAudioFiles.length) {
+                // Load the next audio
+                document.getElementById('part-b-audio-player').src = partBAudioFiles[currentPartBAudioIndex];
+                document.getElementById('part-b-audio-player').play();
+                currentQuestionIndex = 0; // Reset to the first question for the new audio
+                loadQuestion(); // Reload questions
+            } else {
+                // End of Part B, show the final score
+                nextQuestionButton.classList.add('hidden');
+                document.getElementById('next-audio-button').classList.remove('hidden');
+                showFinalScore(); // Show the final score
+            }
+        }
+    }
+});
+
+// Function to show the final score
+function showFinalScore() {
+    const scoreElement = document.createElement('div');
+    scoreElement.innerHTML = `Your final score is: ${score} out of ${partBQuestions.reduce((total, questions) => total + questions.length, 0)}`;
+    reportContainer.appendChild(scoreElement);
+}
+
+// Additional code for the Next Audio button
+document.getElementById('next-audio-button').addEventListener('click', () => {
+    currentPartBAudioIndex++;
+    if (currentPartBAudioIndex < partBAudioFiles.length) {
+        document.getElementById('part-b-audio-player').src = partBAudioFiles[currentPartBAudioIndex];
+        document.getElementById('part-b-audio-player').play();
+        currentQuestionIndex = 0;
+        loadQuestion(); // Reload questions for the next audio
+    } else {
+        // If there are no more audio files, handle accordingly
+        alert('You have completed all parts of the test!');
+        // Optionally reset the state or navigate elsewhere
+    }
+});
+
+
+    </script>
+</body>
+</html>

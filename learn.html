@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunday Samayal</title>
+    <style>
+        /* Basic body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Style for the full-screen title */
+        .intro {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8b400;
+            color: white;
+            font-size: 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Sticky title effect */
+        .intro h1 {
+            margin: 0;
+            font-size: 6rem;
+            opacity: 1;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        /* Styling the content below the title */
+        .content {
+            height: 100vh;
+            background-color: #fff;
+            padding: 50px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            color: black;
+        }
+
+        /* Show content when scrolled */
+        .show-content .content {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Title section -->
+    <div class="intro">
+        <h1>WELCOME TO SUNDAY SAMAYAL</h1>
+    </div>
+
+    <!-- Content section (initially hidden) -->
+    <div class="content">
+        <h2>About Sunday Samayal</h2>
+        <p>Sunday Samayal is your one-stop destination for delicious recipes and culinary inspiration. Whether you’re an experienced cook or a beginner, we have something for everyone!</p>
+    </div>
+
+    <script>
+        // Detect scroll event to reveal content with animation
+        window.addEventListener('scroll', function() {
+            let content = document.querySelector('.content');
+            if (window.scrollY > window.innerHeight / 2) {
+                content.classList.add('content');
+            } else {
+                content.classList.remove('content');
+            }
+        });
+    </script>
+
+</body>
+</html>
